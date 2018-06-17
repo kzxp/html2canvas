@@ -1,0 +1,44 @@
+<html>
+
+<head>
+  <script src="html2canvas.min.js"></script>
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+</head>
+
+<body>
+  <div class="test" style="background: red; width: 300px; height: 300px;">
+    HelloWorld1
+  </div>
+  <div class="test" style="background: red; width: 300px; height: 300px;">
+    HelloWorld2
+  </div>
+  <div class="test" style="background: red; width: 300px; height: 300px;">
+    HelloWorld3
+  </div>
+  <div class="test" style="background: red; width: 300px; height: 300px;">
+    HelloWorld4
+  </div>
+  <script>
+    const testList = Array.from(document.getElementsByClassName('test'))
+    const pdf = new jsPDF({
+      // Use to define height / width to correct pdf size
+      // format: []
+    })
+
+    const testListPromise = testList.map(element => html2canvas(element))
+    Promise.all(testListPromise).then((canvasList) => {
+      canvasList.forEach((canvas, index) => {
+        const base64img = canvas.toDataURL('image/jpeg')
+        pdf.addImage(base64img, 'JPEG', 0, 0)
+        if(index !== canvasList.length - 1) {
+          pdf.addPage()
+        }
+      })
+      // doc.output('datauristring')
+      pdf.save('test.pdf')
+    })
+
+  </script>
+</body>
+
+</html>
